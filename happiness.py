@@ -48,7 +48,6 @@ import pandas as pd
 directory = 'world-happiness'
 all_files = glob.glob(directory + "/*.csv")
 ls = []
-#df = pd.concat((pd.read_csv(f) for f in all_files), sort=False)
 
 for f in all_files:
     ls.append(pd.read_csv(f))    
@@ -72,6 +71,23 @@ ls[2].rename(columns={'Happiness.Rank' : 'Happiness Rank',
  'Trust..Government.Corruption.': 'Trust (Government Corruption)', 
  'Dystopia.Residual': 'Dystopia Residual'}, inplace=1)
 
+
+df = ls[3]
+dfcol = df.columns.tolist()
+order = [1, 0, 2, 3, 4, 5, 6, 8,7]  #Order of the items selected from original list
+dfordered = [dfcol[i] for i in order]
+print(dfordered)
+ls[3] = ls[3][dfordered]
+ls[4] = ls[4][dfordered]
+
+#drop non-common columns Dystopia and Region - Add back later?
+ls[0].drop(columns=['Region', 'Dystopia Residual'], inplace=True)
+ls[1].drop(columns=['Region', 'Dystopia Residual'], inplace=True)
+ls[2].drop(columns=['Dystopia Residual'], inplace=True)
+
+ls[3].columns, ls[4].columns = ls[0].columns, ls[1].columns
 for df in ls:
     print(df.columns)
     print('*'*5)
+   
+#NOW ALL DATAFRAMES HAVE SAME COLUMNS, SAME columns
