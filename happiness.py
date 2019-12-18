@@ -90,8 +90,15 @@ for i in range(0,2):
     ls[i].rename(columns={'Greater Region': 'Region'},inplace=True)
 
 ls[3].columns, ls[4].columns = ls[0].columns, ls[1].columns
+
+years = ['2015', '2016', '2017', '2018', '2019']
+for i in range(0,5):
+    ls[i]['Year'] = pd.to_datetime(years[i])
+
 for df in ls:
     print(df.columns)
     print('*'*5)
     
-  #NOW dataframes all have same columns, same order, with region added, so ready for merging
+#NOW dataframes all have same columns, same order, with region added, with time column so ready for merging if need be and EDA
+data = pd.concat(ls, ignore_index=True)  #merge!
+
