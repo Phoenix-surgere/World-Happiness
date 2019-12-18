@@ -43,6 +43,7 @@ Dystopia Residual
 The extent to which Dystopia Residual contributed to the calculation of the Happiness Score.
 """
 
+#NOW ALL DATAFRAMES HAVE SAME COLUMNS, SAME columns
 import glob 
 import pandas as pd
 directory = 'world-happiness'
@@ -51,26 +52,18 @@ ls = []
 
 for f in all_files:
     ls.append(pd.read_csv(f))    
-
-
-for df in ls:
-    print(df.columns)
-    print('*'*5)
     
 print('%'*20)
 #LIST OF FIXES TO EQUALIZE dfs or to drop non-useful columns or rename etc
 ls[1].drop(columns=['Lower Confidence Interval','Upper Confidence Interval'], inplace=True)
 ls[0].drop(columns=['Standard Error'], inplace=True)
-ls[3].rename(columns={'Country or region': 'Country'}, inplace=1)
 ls[2].drop(columns=['Whisker.low','Whisker.high'], inplace=True)
-
 ls[2].rename(columns={'Happiness.Rank' : 'Happiness Rank', 
  'Happiness.Score': 'Happiness Score', 
  'Economy..GDP.per.Capita.': 'Economy (GDP per Capita)', 
  'Health..Life.Expectancy.' : 'Health (Life Expectancy)', 
  'Trust..Government.Corruption.': 'Trust (Government Corruption)', 
  'Dystopia.Residual': 'Dystopia Residual'}, inplace=1)
-
 
 df = ls[3]
 dfcol = df.columns.tolist()
@@ -80,14 +73,25 @@ print(dfordered)
 ls[3] = ls[3][dfordered]
 ls[4] = ls[4][dfordered]
 
-#drop non-common columns Dystopia and Region - Add back later?
-ls[0].drop(columns=['Region', 'Dystopia Residual'], inplace=True)
-ls[1].drop(columns=['Region', 'Dystopia Residual'], inplace=True)
+#drop non-common column Dystopia  - Add back later?
+ls[0].drop(columns=['Dystopia Residual'], inplace=True)
+ls[1].drop(columns=['Dystopia Residual'], inplace=True)
 ls[2].drop(columns=['Dystopia Residual'], inplace=True)
+regions_map = dict(zip(ls[0].Country, ls[0].Region ))
+for i in range(2,5):
+    try:    
+        ls[i]['Region'] = ls[i]['Country or region'].replace(regions_map)
+    except KeyError:
+        ls[i]['Region'] = ls[i]['Country'].replace(regions_map)
+        
+for i in range(0,2):
+    ls[i]['Greater Region']  = ls[i].Region
+    ls[i].drop(columns=['Region'],inplace=True)
+    ls[i].rename(columns={'Greater Region': 'Region'},inplace=True)
 
 ls[3].columns, ls[4].columns = ls[0].columns, ls[1].columns
 for df in ls:
     print(df.columns)
     print('*'*5)
-   
-#NOW ALL DATAFRAMES HAVE SAME COLUMNS, SAME columns
+    
+  #NOW dataframes all have same columns, same order, with region added, so ready for merging
