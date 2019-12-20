@@ -102,3 +102,13 @@ for df in ls:
 #NOW dataframes all have same columns, same order, with region added, with time column so ready for merging if need be and EDA
 data = pd.concat(ls, ignore_index=True)  #merge!
 
+import matplotlib.pyplot as plt 
+les_miserables = data.loc[data['Happiness Rank'] > 140]
+A=les_miserables.groupby(by='Year').Region.value_counts()
+#print(A)
+A.unstack(level=0).plot(kind='bar', subplots=True, figsize=(10,10)); plt.show()
+
+happy = data.loc[data['Happiness Rank'] < 20]
+A=happy.groupby(by='Year').Region.value_counts()
+#print(A)
+A.unstack(level=0).plot(kind='bar', subplots=True, figsize=(10,10)); plt.show()
