@@ -78,6 +78,19 @@ ls[0].drop(columns=['Dystopia Residual'], inplace=True)
 ls[1].drop(columns=['Dystopia Residual'], inplace=True)
 ls[2].drop(columns=['Dystopia Residual'], inplace=True)
 regions_map = dict(zip(ls[0].Country, ls[0].Region ))
+#Manually adding some info to reflect later developments
+regions_map.update({'Somalia': 'Sub-Saharan Africa',
+ 'South Sudam': 'Middle East and Northern Africa',
+ 'Namibia': 'Sub-Saharan Africa',
+ 'Belize':'Latin America and Caribbean',
+ 'Northern Cyprus': 'Western Europe',
+ 'Trinidad & Tobago': 'Latin America and Caribbean',
+ 'Taiwan Province of China': 'Eastern Asia',
+ 'North Macedonia': 'Central and Eastern Europe',
+ 'Hong Kong S.A.R., China': 'Eastern Asia',
+ 'Gambia':'Sub-Saharan Africa',
+ 'South Sudan': 'Sub-Saharan Africa'
+                    })
 for i in range(2,5):
     try:    
         ls[i]['Region'] = ls[i]['Country or region'].replace(regions_map)
@@ -100,15 +113,47 @@ for df in ls:
     print('*'*5)
     
 #NOW dataframes all have same columns, same order, with region added, with time column so ready for merging if need be and EDA
-data = pd.concat(ls, ignore_index=True)  #merge!
+
+data = pd.concat(ls, ignore_index=True,sort=True)
+#EDA BEGINS BELOW-----------------    
 
 import matplotlib.pyplot as plt 
-les_miserables = data.loc[data['Happiness Rank'] > 140]
+les_miserables = data.loc[data['Happiness Rank'] > 140].reset_index(drop=True)
 A=les_miserables.groupby(by='Year').Region.value_counts()
 #print(A)
 A.unstack(level=0).plot(kind='bar', subplots=True, figsize=(10,10)); plt.show()
 
-happy = data.loc[data['Happiness Rank'] < 20]
+happy = data.loc[data['Happiness Rank'] < 20].reset_index(drop=True)
 A=happy.groupby(by='Year').Region.value_counts()
 #print(A)
 A.unstack(level=0).plot(kind='bar', subplots=True, figsize=(10,10)); plt.show()
+
+#Exploring Outliers - Happiest and Saddest Regions
+westEurope = happy.loc[happy['Region'] == 'Western Europe'].reset_index(drop=True)
+subSahara = les_miserables.loc[les_miserables['Region'] == 'Sub-Saharan Africa'].reset_index(drop=True)
+
+westEuroped = westEurope.groupby(by='Country').mean().drop(columns=['Happiness Rank', 'Happiness Score'])
+subSaharad = subSahara.groupby(by='Country').mean().drop(columns=['Happiness Rank', 'Happiness Score'])
+
+westEuroped = westEuroped.median()
+subSaharad = subSaharad.median()
+
+westEuroped.plot(kind='Bar', title='Median Happiness Factors values across Happiest Regions')
+plt.show()
+
+subSaharad.plot(kind='Bar', title='Median Happiness Factors values across Saddest Regions')
+plt.show()
+
+#Exploring regions more generally
+regions = data.groupby(by='Region').median()
+for factor in regions:
+    if factor != 'Happiness Rank' and factor != 'Happiness Score':
+        plots = regions.loc[:,factor].sort_values(ascending=False)
+        print(plots)
+        print('\n')
+        
+    
+#exploring time series trend of factors and scores    
+years = data.drop(columns=['Happiness Rank', 'Happiness Score']).groupby(by='Year').median() 
+years.plot(subplots=True, figsize=(10,10),title='Median Global values over time'); 
+plt.show()
