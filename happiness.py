@@ -163,4 +163,32 @@ import numpy as np
 corr = regions.drop(columns=['Happiness Rank']).corr()
 mask = np.zeros_like(corr, dtype=np.bool)
 mask[np.triu_indices_from(mask)] = True
-sns.heatmap(corr, annot=True)
+sns.heatmap(corr, annot=True); plt.show()
+
+#Continent analysis, inspired by kaggle notebook by Javad Zabihi (in R)
+continents = {'Western Europe': 'Europe',
+               'Central and Eastern Europe': 'Europe',
+              'Eastern Asia': 'Asia',  
+              'Southeastern Asia': 'Asia',
+              'Southern Asia': 'Asia' ,
+              'Latin America and Caribbean': 'South America', 
+              'Middle East and Northern Africa': 'Africa', 
+              'Sub-Saharan Africa':'Africa',
+              'Australia and New Zealand': 'Australia'}
+data['Continent'] = np.nan
+data['Continent'] = data['Region'].replace(continents)
+
+fig, (ax1, ax2) = plt.subplots(2,1, figsize=(10,10))
+ax1.title.set_text('Happiness across Continents - Boxplot')
+ax2.title.set_text('Happiness across Continets - Scatterplot')
+sns.boxplot(ax=ax1, data=data, y='Happiness Score', x='Continent')
+sns.swarmplot(ax=ax2, x='Continent' , y='Happiness Score', hue='Continent',data=data)
+plt.show()
+
+#Violinplots for every factor affecting Happiness across Continents
+data_copy = data.drop(columns=['Happiness Rank', 'Happiness Score', 'Region', 'Year', 'Country'])
+for column in data_copy.columns[:-1]:
+    plt.xticks(rotation=90)
+    plt.title(f'{column} Distribution across Continents')
+    sns.violinplot(data=data_copy, y=column, x='Continent')
+    plt.show()
