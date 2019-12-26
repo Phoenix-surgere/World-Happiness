@@ -157,3 +157,10 @@ for factor in regions:
 years = data.drop(columns=['Happiness Rank', 'Happiness Score']).groupby(by='Year').median() 
 years.plot(subplots=True, figsize=(10,10),title='Median Global values over time'); 
 plt.show()
+
+import seaborn as sns
+import numpy as np
+corr = regions.drop(columns=['Happiness Rank']).corr()
+mask = np.zeros_like(corr, dtype=np.bool)
+mask[np.triu_indices_from(mask)] = True
+sns.heatmap(corr, annot=True)
