@@ -138,11 +138,14 @@ subSaharad = subSahara.groupby(by='Country').mean().drop(columns=['Happiness Ran
 westEuroped = westEuroped.median()
 subSaharad = subSaharad.median()
 
-westEuroped.plot(kind='Bar', title='Median Happiness Factors values across Happiest Regions')
-plt.show()
+plt.xticks(rotation=90); 
+plt.title('Median Happiness Factor values across Happiest Region (West Europe)')
+sns.barplot(data=pd.DataFrame(westEuroped).T); plt.show()
 
-subSaharad.plot(kind='Bar', title='Median Happiness Factors values across Saddest Regions')
-plt.show()
+plt.xticks(rotation=90); 
+plt.title('Median Happiness Factor values across Saddest Region (Sub Sahara)')
+sns.barplot(data=pd.DataFrame(subSaharad).T); plt.show()
+
 
 #Exploring regions more generally
 regions = data.groupby(by='Region').median()
