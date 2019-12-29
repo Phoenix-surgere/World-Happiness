@@ -18,9 +18,6 @@ Rank of the country based on the Happiness Score.
 Happiness Score
 A metric measured in 2015 by asking the sampled people the question: "How would you rate your happiness on a scale of 0 to 10 where 10 is the happiest."
 
-Standard Error
-The standard error of the happiness score.
-
 Economy (GDP per Capita)
 The extent to which GDP contributes to the calculation of the Happiness Score.
 
@@ -39,8 +36,6 @@ The extent to which Perception of Corruption contributes to Happiness Score.
 Generosity
 The extent to which Generosity contributed to the calculation of the Happiness Score.
 
-Dystopia Residual
-The extent to which Dystopia Residual contributed to the calculation of the Happiness Score.
 """
 
 #NOW ALL DATAFRAMES HAVE SAME COLUMNS, SAME columns
@@ -185,7 +180,7 @@ fig, (ax1, ax2) = plt.subplots(2,1, figsize=(10,10))
 ax1.title.set_text('Happiness across Continents - Boxplot')
 ax2.title.set_text('Happiness across Continets - Scatterplot')
 sns.boxplot(ax=ax1, data=data, y='Happiness Score', x='Continent')
-sns.swarmplot(ax=ax2, x='Continent' , y='Happiness Score', hue='Continent',data=data)
+#sns.swarmplot(ax=ax2, x='Continent' , y='Happiness Score', hue='Continent',data=data)
 plt.show()
 
 #Violinplots for every factor affecting Happiness across Continents
