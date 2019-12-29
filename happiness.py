@@ -168,7 +168,7 @@ mask = np.zeros_like(corr, dtype=np.bool)
 mask[np.triu_indices_from(mask)] = True
 sns.heatmap(corr, annot=True); plt.show()
 
-#Continent analysis, inspired by kaggle notebook by Javad Zabihi (in R)
+#Continent analysis, inspired by kaggle notebook by Javad Zabihi
 continents = {'Western Europe': 'Europe',
                'Central and Eastern Europe': 'Europe',
               'Eastern Asia': 'Asia',  
@@ -194,4 +194,12 @@ for column in data_copy.columns[:-1]:
     plt.xticks(rotation=90)
     plt.title(f'{column} Distribution across Continents')
     sns.violinplot(data=data_copy, y=column, x='Continent')
+    plt.show()
+    
+#Scatterplots for every factor affecting Hapiness across Continents to get extra sense  
+data_copy = data.drop(columns=['Happiness Rank',  'Region', 'Year', 'Country'])
+for column in data_copy.columns[:-1]:
+    plt.xticks(rotation=90)
+    plt.title(f'{column} Distribution across Continents')
+    sns.scatterplot(x=column, y='Happiness Score', data=data, hue='Continent');
     plt.show()
